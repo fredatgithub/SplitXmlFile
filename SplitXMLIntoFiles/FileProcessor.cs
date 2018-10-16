@@ -38,7 +38,7 @@ namespace SplitXMLIntoFiles
 
     protected string GetElementFullClosingPath(string element)
     {
-      var path = "";
+      var path = string.Empty;
       var xs = GetXs();
       if (_schemaXMLDoc == null)
       {
@@ -208,7 +208,6 @@ namespace SplitXMLIntoFiles
       var path = string.Empty;
       var str = closeingPath.Replace("</", "").Replace(">", "|");
       var nodes = str.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-
       for (var i = nodes.Length - 1; i >= 0; i--)
       {
         path += $"<{nodes[i]}>";

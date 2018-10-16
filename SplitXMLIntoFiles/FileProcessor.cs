@@ -203,10 +203,10 @@ namespace SplitXMLIntoFiles
       return output;
     }
 
-    private static string ReversePath(string closeingPath)
+    private static string ReversePath(string closingPath)
     {
       var path = string.Empty;
-      var str = closeingPath.Replace("</", "").Replace(">", "|");
+      var str = closingPath.Replace("</", "").Replace(">", "|");
       var nodes = str.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
       for (var i = nodes.Length - 1; i >= 0; i--)
       {
@@ -222,9 +222,9 @@ namespace SplitXMLIntoFiles
       return $"{nodes[0]}";
     }
 
-    private static string GetFilePartName(int fileCnt, FileSystemInfo fileSystemInfo)
+    private static string GetFilePartName(int fileContent, FileSystemInfo fileSystemInfo)
     {
-      return Application.StartupPath + "/" + fileSystemInfo.Name + ".part" + fileCnt + fileSystemInfo.Extension;
+      return Application.StartupPath + "/" + fileSystemInfo.Name + ".part" + fileContent + fileSystemInfo.Extension;
     }
   }
 }

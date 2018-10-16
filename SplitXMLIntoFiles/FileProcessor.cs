@@ -18,6 +18,7 @@ namespace SplitXMLIntoFiles
 
     private static XNamespace GetXs()
     {
+      // return the standard namespace
       return XNamespace.Get("http://www.w3.org/2001/XMLSchema");
     }
 
@@ -26,7 +27,7 @@ namespace SplitXMLIntoFiles
       var proc = new Process();
       var fi = new FileInfo(xmlFilePath);
       var arguments = xmlFilePath + " /outputdir:" + fi.DirectoryName;
-      var xsdExe = Application.StartupPath + "\\xsd.exe"; // @"C:\DEV\Codeplex\LargeXmlSplit\SplitXMLIntoFiles\xsd.exe";
+      var xsdExe = Application.StartupPath + "\\xsd.exe"; // bin\debug\xsd.exe";
       proc.StartInfo.Arguments = arguments;
       proc.StartInfo.FileName = xsdExe;
       proc.Start();
@@ -71,9 +72,16 @@ namespace SplitXMLIntoFiles
 
     private string GetSchemaXml()
     {
-      using (var reader = new StreamReader(_curXSDFile, Encoding.UTF8))
+      try
       {
-        return reader.ReadToEnd();
+        using (var reader = new StreamReader(_curXSDFile, Encoding.UTF8))
+        {
+          return reader.ReadToEnd();
+        }
+      }
+      catch (Exception)
+      {
+        throw;
       }
     }
 
@@ -83,10 +91,8 @@ namespace SplitXMLIntoFiles
     public int SplitFile(double maxFileSplitSize, string fileName)
     {
       if (maxFileSplitSize <= 0 || string.IsNullOrWhiteSpace(fileName)) return 0;
-
       CreateXsd(fileName);
       _xmlFileName = fileName;
-
       var fi = new FileInfo(fileName);
       var numOfNewFiles = Math.Ceiling(fi.Length / maxFileSplitSize);
       var fileCnt = 0;
@@ -146,17 +152,18 @@ namespace SplitXMLIntoFiles
 
     private static bool CanCloseFile(string eltName, string lineTrimed)
     {
+      // trim
       return lineTrimed.EndsWith("/>") || (lineTrimed.Contains("<" + eltName) && lineTrimed.Contains("</" + eltName));
     }
 
     private static string GetEltName(string lineTrimed)
     {
       var eltName = lineTrimed.Split(' ')[0];
-
       if (eltName.Contains(">"))
       {
         eltName = eltName.Substring(1, eltName.IndexOf('>'));
       }
+
       eltName = eltName.Replace("<", "").Replace(">", "");
       return eltName;
     }
@@ -192,10 +199,11 @@ namespace SplitXMLIntoFiles
       {
         return string.Empty;
       }
+
       return output;
     }
 
-    private string ReversePath(string closeingPath)
+    private static string ReversePath(string closeingPath)
     {
       var path = string.Empty;
       var str = closeingPath.Replace("</", "").Replace(">", "|");
@@ -212,13 +220,12 @@ namespace SplitXMLIntoFiles
     {
       var str = closeingPath.Replace("</", "").Replace(">", "|");
       var nodes = str.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-
       return $"{nodes[0]}";
     }
 
-    private static string GetFilePartName(int fileCnt, FileSystemInfo fi)
+    private static string GetFilePartName(int fileCnt, FileSystemInfo fileSystemInfo)
     {
-      return Application.StartupPath + "/" + fi.Name + ".part" + fileCnt + fi.Extension;
+      return Application.StartupPath + "/" + fileSystemInfo.Name + ".part" + fileCnt + fileSystemInfo.Extension;
     }
   }
 }

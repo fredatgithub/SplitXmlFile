@@ -4,16 +4,18 @@ using SplitXMLIntoFiles.Properties;
 
 namespace SplitXMLIntoFiles
 {
-  public partial class Main : Form
+  internal partial class Main : Form
   {
     private const int Mb = 1000000;
     public Main()
     {
       InitializeComponent();
+      // init other var
     }
 
     private string ImportXmlDoc()
     {
+      // check if no file name has been selected
       openFileDlg = new OpenFileDialog { Filter = "XML files|*.xml|All files|*.*" };
       openFileDlg.ShowDialog();
       return openFileDlg.FileName;
@@ -31,7 +33,6 @@ namespace SplitXMLIntoFiles
       var size = double.Parse(txtFileSize.Text.Trim()) * Mb;
       var fileProcessor = new FileProcessor();
       var numOfNewFiles = fileProcessor.SplitFile(size, fileName);
-
       MessageBox.Show(Resources.Main_btnSplit_Click_Done__ + numOfNewFiles + Resources.Main_btnSplit_Click_ + Application.StartupPath);
     }
   }

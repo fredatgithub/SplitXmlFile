@@ -5,12 +5,10 @@ namespace SplitXMLIntoFiles
 {
   internal static class Program
   {
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
     [STAThread]
     private static void Main()
     {
+      // start the application
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new Main());
